@@ -6,7 +6,7 @@ import com.globant.domain.entities.Transaction;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface WalletRepo {
+public interface WalletRepository {
     BigDecimal getBalance();
     List<Crypto> getCryptocurrencies();
     List<Transaction> getTransactions();

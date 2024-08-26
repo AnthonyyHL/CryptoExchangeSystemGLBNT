@@ -1,6 +1,6 @@
 package com.globant;
 
-import com.globant.domain.entities.Account;
+import com.globant.domain.entities.User;
 import com.globant.domain.entities.Crypto;
 import com.globant.domain.entities.Order;
 import com.globant.domain.entities.SellOrder;
@@ -12,9 +12,9 @@ public class Main {
     static int numberId = 10;
     public static void main(String[] args) {
         // TESTS
-        Account account = new Account("anthleon", "anthleon@gmail.com", "12345a6");
+        User user = new User("anthleon", "anthleon@gmail.com", "12345a6");
         System.out.println("000" + numberId);
-        System.out.println(account.getAccountId());
+        System.out.println(user.getAccountId());
 
         System.out.println("\n");
 

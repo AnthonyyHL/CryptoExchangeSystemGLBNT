@@ -4,7 +4,7 @@ import com.globant.domain.util.MakeId;
 
 import java.util.List;
 
-public class Account {
+public class User {
     static int accountNumberId = 1;
     private final String accountId;
     protected String username;
@@ -12,7 +12,7 @@ public class Account {
     protected transient String password;
     private List<Transaction> transactions;
 
-    public Account(String username, String email, String password) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
