@@ -6,8 +6,11 @@ import java.util.List;
 
 public interface UserRepository {
     List<User> getAll();
+    void setActiveUser(User user);
+    void removeActiveUser();
     User getByUsername(String username);
     User save(User user);
     boolean usernameAlreadyExists(String username);
     boolean emailAlreadyExists(String email);
+    boolean passwordMatches(String username, String password);
 }

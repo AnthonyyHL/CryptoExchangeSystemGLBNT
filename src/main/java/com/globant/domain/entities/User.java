@@ -18,6 +18,7 @@ public class User {
         this.password = password;
 
         accountId = MakeId.makeIdNumber(accountNumberId);
+        accountNumberId++;
     }
 
     public String getAccountId() {
@@ -31,6 +32,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public String getPassword() { return password; }
 
     public String toString() {
         return "User{" +

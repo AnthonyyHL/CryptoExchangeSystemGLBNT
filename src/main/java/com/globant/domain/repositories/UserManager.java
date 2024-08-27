@@ -11,6 +11,7 @@ public class UserManager implements UserRepository {
     Map<String, User> users;
     Map<String, String> emailToUsername;
     Map<String, String> usernameToUsername;
+    ActiveUser activeUser;
 
     public UserManager() {
         this.users = new HashMap<>();
@@ -32,6 +33,17 @@ public class UserManager implements UserRepository {
     }
 
     @Override
+    public void setActiveUser(User user) {
+        activeUser = ActiveUser.getInstance();
+        activeUser.setActiveUser(user);
+    }
+
+    @Override
+    public void removeActiveUser() {
+        activeUser.logOutActiveUser();
+    }
+
+    @Override
     public List<User> getAll() {
         return users.values().stream().toList();
     }
@@ -46,4 +58,9 @@ public class UserManager implements UserRepository {
         return emailToUsername.containsKey(email);
     }
 
+    @Override
+    public boolean passwordMatches(String email, String password) {
+        String username = emailToUsername.get(email);
+        return users.get(username).getPassword().equals(password);
+    }
 }
