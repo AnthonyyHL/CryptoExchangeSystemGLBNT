@@ -8,10 +8,12 @@ import com.globant.domain.util.UserCreationException;
 
 public class UserRegistrationUCImpl implements UserRegistrationUC {
     UserRepository userRepository;
+    public UserRegistrationUCImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     @Override
     public void registerUser(String name, String email, String password) {
         User user = new User(name, email, password);
-        userRepository = new UserManager();
         userRepository.save(user);
     }
     @Override

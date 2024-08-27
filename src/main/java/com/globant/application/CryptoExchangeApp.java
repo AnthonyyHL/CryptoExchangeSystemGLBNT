@@ -1,12 +1,20 @@
 package com.globant.application;
 
-import com.globant.adapters.persistence.InMemory;
+import com.globant.adapters.console.ConsoleAdapter;
+import com.globant.application.config.UsersLoader;
+import com.globant.application.port.out.UserRepository;
 import com.globant.application.usecases.UserRegistrationUCImpl;
+import com.globant.domain.repositories.UserManager;
 
 public class CryptoExchangeApp {
     public static void boot(){
-        UserRegistrationUCImpl userRegistrationUC = new UserRegistrationUCImpl();
-        InMemory inMemory = new InMemory(userRegistrationUC);
+        UserRepository userRepository = new UserManager();
+        UsersLoader usersLoader = new UsersLoader(userRepository);
+        usersLoader.loadUsers();
+
+        UserRegistrationUCImpl userRegistrationUC = new UserRegistrationUCImpl(userRepository);
+        ConsoleAdapter consoleAdapter = new ConsoleAdapter(userRegistrationUC);
+        consoleAdapter.boot();
     }
     public static void main(String[] args) {
         boot();

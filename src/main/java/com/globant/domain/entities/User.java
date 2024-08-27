@@ -31,4 +31,14 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public String toString() {
+        return "User{" +
+                "accountId='" + accountId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", transactions=" + transactions +
+                '}';
+    }
 }
