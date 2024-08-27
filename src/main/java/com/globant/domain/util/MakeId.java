@@ -12,7 +12,6 @@ public class MakeId {
         } else {
             id = "" + numberId;
         }
-        numberId++;
         return id;
     }
 }

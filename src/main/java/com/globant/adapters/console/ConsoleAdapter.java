@@ -2,7 +2,7 @@ package com.globant.adapters.console;
 
 import com.globant.application.usecases.UserRegistrationUCImpl;
 import com.globant.domain.util.StaticScanner;
-import com.globant.domain.util.UserCreationException;
+import com.globant.domain.util.UserAuthException;
 
 import java.util.InputMismatchException;
 
@@ -62,7 +62,7 @@ public class ConsoleAdapter {
                 username = StaticScanner.getInstance().nextLine();
                 userRegistrationUC.existsByUsername(username);
                 invalidData = false;
-            }catch (UserCreationException e){
+            }catch (UserAuthException e){
                 System.err.println(e.getMessage());
             }
         }
@@ -78,7 +78,7 @@ public class ConsoleAdapter {
             try{
                 userRegistrationUC.existsByEmail(email);
                 invalidData = false;
-            }catch (UserCreationException e){
+            }catch (UserAuthException e){
                 System.err.println(e.getMessage());
             }
         }
