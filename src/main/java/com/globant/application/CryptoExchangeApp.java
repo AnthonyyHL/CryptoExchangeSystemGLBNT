@@ -15,7 +15,9 @@ public class CryptoExchangeApp {
         usersLoader.loadUsers();
 
         UserRegistrationUCImpl userRegistrationUC = new UserRegistrationUCImpl(userRepository);
-        ConsoleAdapter consoleAdapter = new ConsoleAdapter(userRegistrationUC);
+        UserLoginUCImpl userLoginUC = new UserLoginUCImpl(userRepository);
+
+        ConsoleAdapter consoleAdapter = new ConsoleAdapter(userRegistrationUC, userLoginUC);
         consoleAdapter.boot();
     }
     public static void main(String[] args) {
