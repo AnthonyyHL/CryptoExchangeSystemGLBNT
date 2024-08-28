@@ -9,6 +9,7 @@ public interface UserRepository {
     void setActiveUser(User user);
     void removeActiveUser();
     User getByUsername(String username);
+    User getByEmail(String email);
     User save(User user);
     boolean usernameAlreadyExists(String username);
     boolean emailAlreadyExists(String email);

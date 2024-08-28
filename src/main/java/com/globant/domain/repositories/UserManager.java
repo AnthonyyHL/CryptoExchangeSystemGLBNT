@@ -2,6 +2,7 @@ package com.globant.domain.repositories;
 
 import com.globant.application.port.out.UserRepository;
 import com.globant.domain.entities.User;
+import com.globant.domain.util.UserAuthException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,12 @@ public class UserManager implements UserRepository {
     }
 
     @Override
+    public User getByEmail(String email) {
+        String username = emailToUsername.get(email);
+        return users.get(username);
+    }
+
+    @Override
     public User save(User user) {
         User userSaved = users.put(user.getUsername(), user);
         emailToUsername.put(user.getEmail(), user.getUsername());
@@ -35,7 +42,12 @@ public class UserManager implements UserRepository {
     @Override
     public void setActiveUser(User user) {
         activeUser = ActiveUser.getInstance();
-        activeUser.setActiveUser(user);
+        try {
+            activeUser.setActiveUser(user);
+        } catch (UserAuthException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @Override

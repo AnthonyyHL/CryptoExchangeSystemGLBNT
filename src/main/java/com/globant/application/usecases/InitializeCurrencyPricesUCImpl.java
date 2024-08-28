@@ -19,18 +19,27 @@ public class InitializeCurrencyPricesUCImpl implements InitializeCurrencyPricesU
 
     @Override
     public void loadCurrencies() {
-        CurrencyFactory.createCurrency("crypto", "BTC", "Bitcoin", new BigDecimal("50000"));
-        CurrencyFactory.createCurrency("crypto", "ETH", "Ethereum", new BigDecimal("3000"));
+        try {
+            CurrencyFactory.createCurrency("crypto", "BTC", "Bitcoin", new BigDecimal("50000"));
+            CurrencyFactory.createCurrency("crypto", "ETH", "Ethereum", new BigDecimal("3000"));
+
+            CurrencyFactory.createCurrency("fiat", "USD", "Dollar", new BigDecimal("1"));
+            CurrencyFactory.createCurrency("fiat", "EUR", "Euro", new BigDecimal("1.2"));
+        } catch (NoCurrencyAvailableException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
+    @Override
     public void loadCurrencyOnExchange() {
         Currency bitcoin = Currency.getInstance("BTC");
         Currency ethereum = Currency.getInstance("ETH");
 
         exchange.addCurrency(bitcoin, new BigDecimal("100"));
-        exchange.addCurrency(ethereum, new BigDecimal("200"));
+        exchange.addCurrency(ethereum, new BigDecimal("500"));
     }
 
+    @Override
     public Map<Currency, BigDecimal> getCurrencyAvailables() {
         return exchange.getCurrencies();
     }
