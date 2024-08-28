@@ -1,5 +1,7 @@
-package com.globant.domain.entities;
+package com.globant.domain.entities.orders;
 
+import com.globant.domain.entities.User;
+import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.util.MakeId;
 
 import java.math.BigDecimal;

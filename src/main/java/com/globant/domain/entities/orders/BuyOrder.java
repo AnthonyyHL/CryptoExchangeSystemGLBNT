@@ -1,4 +1,6 @@
-package com.globant.domain.entities;
+package com.globant.domain.entities.orders;
+
+import com.globant.domain.entities.currencies.Crypto;
 
 import java.math.BigDecimal;
 

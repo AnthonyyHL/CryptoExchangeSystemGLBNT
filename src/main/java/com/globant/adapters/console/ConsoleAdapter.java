@@ -1,5 +1,6 @@
 package com.globant.adapters.console;
 
+import com.globant.application.usecases.InitializeCurrencyPricesUCImpl;
 import com.globant.application.usecases.UserLoginUCImpl;
 import com.globant.application.usecases.UserRegistrationUCImpl;
 import com.globant.domain.util.StaticScanner;
@@ -10,13 +11,16 @@ import java.util.InputMismatchException;
 public class ConsoleAdapter {
     private final UserRegistrationUCImpl userRegistrationUC;
     private final UserLoginUCImpl userLoginUC;
+    private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
     private static boolean invalidData = true;
     public ConsoleAdapter(
             UserRegistrationUCImpl userRegistrationUC,
-            UserLoginUCImpl userLoginUC
+            UserLoginUCImpl userLoginUC,
+            InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
+        this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
     }
     public void boot(){
         String[] bootOptions = {"Sign Up", "Log In", "Exit"};

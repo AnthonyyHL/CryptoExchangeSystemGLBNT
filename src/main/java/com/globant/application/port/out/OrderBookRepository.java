@@ -1,6 +1,6 @@
 package com.globant.application.port.out;
 
-import com.globant.domain.entities.Order;
+import com.globant.domain.entities.orders.Order;
 
 import java.util.List;
 

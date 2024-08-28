@@ -1,18 +1,19 @@
-package com.globant.domain.entities.crypto;
-
-import com.globant.domain.util.MakeId;
+package com.globant.domain.entities.currencies;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Currency {
+    protected static Map<String, Currency> instances = new HashMap<>();
     private static Currency referenceCurrency;
 
     protected String shorthandSymbol;
     protected String name;
     protected BigDecimal price;
 
-    public Currency(String name, BigDecimal price) {
+    protected Currency(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
         if (name.length() > 3)
@@ -21,9 +22,12 @@ public abstract class Currency {
             this.shorthandSymbol = name;
     }
 
-    public Currency(String name, BigDecimal price, String shorthandSymbol) {
+    protected Currency(String name, BigDecimal price, String shorthandSymbol) {
         this(name, price);
         this.shorthandSymbol = shorthandSymbol.toUpperCase();
+    }
+    public static Currency getInstance(String shorthandSymbol) {
+        return instances.get(shorthandSymbol);
     }
 
     public String getShorthandSymbol() {

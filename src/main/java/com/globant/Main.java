@@ -1,9 +1,9 @@
 package com.globant;
 
 import com.globant.domain.entities.User;
-import com.globant.domain.entities.Crypto;
-import com.globant.domain.entities.Order;
-import com.globant.domain.entities.SellOrder;
+import com.globant.domain.entities.currencies.Crypto;
+import com.globant.domain.entities.orders.Order;
+import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.util.InvalidOrderException;
 
 import java.math.BigDecimal;
