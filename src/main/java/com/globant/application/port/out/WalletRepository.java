@@ -1,6 +1,6 @@
 package com.globant.application.port.out;
 
-import com.globant.domain.entities.Crypto;
+import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.entities.Transaction;
 
 import java.math.BigDecimal;

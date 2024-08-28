@@ -1,5 +1,6 @@
 package com.globant.domain.entities;
 
+import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.util.TradeType;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class Transaction {
         this.cryptoTraded = cryptoTraded;
         this.amountTraded = amountTraded;
         this.tradeType = tradeType;
-        this.priceAtTheMoment = cryptoTraded.price;
+        this.priceAtTheMoment = cryptoTraded.getPrice();
     }
 
     @Override

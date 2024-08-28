@@ -1,7 +1,7 @@
 package com.globant.domain.repositories;
 
 import com.globant.application.port.out.OrderBookRepository;
-import com.globant.domain.entities.Order;
+import com.globant.domain.entities.orders.Order;
 
 import java.util.List;
 

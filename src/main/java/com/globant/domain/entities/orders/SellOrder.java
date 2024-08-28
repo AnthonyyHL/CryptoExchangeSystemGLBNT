@@ -1,9 +1,9 @@
-package com.globant.domain.entities;
+package com.globant.domain.entities.orders;
 
+import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.util.InvalidOrderException;
 
 import java.math.BigDecimal;
-import java.security.InvalidAlgorithmParameterException;
 
 public class SellOrder extends Order{
     private BigDecimal minimumPrice;

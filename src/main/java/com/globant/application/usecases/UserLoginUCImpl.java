@@ -14,7 +14,7 @@ public class UserLoginUCImpl implements UserLoginUC {
 
     @Override
     public void logInUser(String email, String password) {
-        User user = userRepository.getByUsername(email);
+        User user = userRepository.getByEmail(email);
         userRepository.setActiveUser(user);
     }
 
