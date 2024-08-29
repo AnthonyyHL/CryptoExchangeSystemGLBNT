@@ -2,22 +2,17 @@ package com.globant.application;
 
 import com.globant.adapters.console.ConsoleAdapter;
 import com.globant.application.config.UsersLoader;
-import com.globant.application.port.in.InitializeCurrencyPricesUC;
 import com.globant.application.port.out.UserRepository;
 import com.globant.application.usecases.InitializeCurrencyPricesUCImpl;
 import com.globant.application.usecases.UserLoginUCImpl;
 import com.globant.application.usecases.UserRegistrationUCImpl;
+import com.globant.application.usecases.ViewWalletBalanceUCImpl;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.entities.currencies.CurrencyFactory;
 import com.globant.domain.repositories.Exchange;
 import com.globant.domain.repositories.UserManager;
 
-import java.math.BigDecimal;
-
 public class CryptoExchangeApp {
     public static void boot(){
-        Currency.setReferenceCurrency(Currency.getInstance("USD"));
-
         UserRepository userRepository = new UserManager();
         Exchange exchange = new Exchange();
 
@@ -29,12 +24,15 @@ public class CryptoExchangeApp {
         InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC = new InitializeCurrencyPricesUCImpl(exchange);
         initializeCurrencyPricesUC.loadCurrencies(); //Cargar instancias de monedas disponibles en todo el sistema
         initializeCurrencyPricesUC.loadCurrencyOnExchange();
+        ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
 
+        Currency.setReferenceCurrency(Currency.getInstance("USD"));
 
         ConsoleAdapter consoleAdapter = new ConsoleAdapter(
                 userRegistrationUC,
                 userLoginUC,
-                initializeCurrencyPricesUC
+                initializeCurrencyPricesUC,
+                viewWalletBalanceUC
         );
         consoleAdapter.boot();
     }
