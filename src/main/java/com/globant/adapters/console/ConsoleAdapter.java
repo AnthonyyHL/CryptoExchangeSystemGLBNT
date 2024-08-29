@@ -3,30 +3,49 @@ package com.globant.adapters.console;
 import com.globant.application.usecases.InitializeCurrencyPricesUCImpl;
 import com.globant.application.usecases.UserLoginUCImpl;
 import com.globant.application.usecases.UserRegistrationUCImpl;
+import com.globant.application.usecases.ViewWalletBalanceUCImpl;
+import com.globant.domain.entities.currencies.Crypto;
+import com.globant.domain.entities.currencies.Currency;
+import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.repositories.ActiveUser;
 import com.globant.domain.repositories.UserManager;
+import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.StaticScanner;
 import com.globant.domain.util.UserAuthException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.InputMismatchException;
 
 public class ConsoleAdapter {
     private final UserRegistrationUCImpl userRegistrationUC;
     private final UserLoginUCImpl userLoginUC;
     private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
+    private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
+
+    Wallet wallet;
 
     String[] bootOptions = {"Sign Up", "Log In", "Exit"};
-    String[] mainOptions = {"Exchange Cryptocurrencies", "Deposit", "Withdraw", "My Wallet", "Place Orders", "Exit"};
+    String[] mainOptions = {
+            "Exchange Cryptocurrencies",
+            "Deposit",
+            "Withdraw",
+            "My Wallet",
+            "Place Orders",
+            "Exit"
+    };
 
     private static boolean invalidData = true;
     public ConsoleAdapter(
             UserRegistrationUCImpl userRegistrationUC,
             UserLoginUCImpl userLoginUC,
-            InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC
+            InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
+            ViewWalletBalanceUCImpl viewWalletBalanceUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
         this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
+        this.viewWalletBalanceUC = viewWalletBalanceUC;
     }
     public void boot(){
         System.out.println("### Welcome to the Crypto Exchange App ###");
@@ -47,6 +66,7 @@ public class ConsoleAdapter {
         String email = getEmailFromConsole(optionSelected);
         String password = getPasswordFromConsole(email);
         userLoginUC.logInUser(email, password);
+        wallet = ActiveUser.getInstance().getActiveUser().getWallet();
     }
 
     public String getUsernameFromConsole(){
@@ -129,6 +149,38 @@ public class ConsoleAdapter {
         }
     }
 
+    public void walletMenu(){
+        String[] walletOptions = {"Back to Main Menu"};
+        System.out.println("\nWALLET:");
+        viewWalletBalanceUC.setWallet(wallet);
+
+        System.out.println("-".repeat(3) + " Fiat Currency " + "-".repeat(15));
+        viewWalletBalanceUC.viewWalletFiats().forEach((fiat, amount) ->
+                System.out.printf("\t%s | Amount: %s\n", fiat.getName(), amount));
+
+        System.out.println("\n" + "-".repeat(3) + " Crypto Currency " + "-".repeat(15));
+        viewWalletBalanceUC.viewWalletCryptocurrencies().forEach((crypto, amount) -> {
+                BigDecimal amountPrice = crypto.getPrice().multiply(amount).setScale(2, RoundingMode.HALF_UP);
+                System.out.printf("\t%s | Price: %s | Amount: %s ≈ %s\n", crypto.getName(), crypto.getPrice(), amount, amountPrice);
+        });
+        System.out.println("\n\tBALANCE: " + wallet.getBalance().setScale(2, RoundingMode.HALF_UP) + "\n");
+
+        printMenu(walletOptions, "Select an option:");
+        System.out.println("\nEnter an option: ");
+        int optionSelected = StaticScanner.getInstance().nextInt();
+        StaticScanner.getInstance().nextLine();
+
+        switch (optionSelected){
+            // Add more cases here
+            case 1:
+                printMainMenu(mainOptions);
+                break;
+            default:
+                System.err.println("Invalid option. Try again.");
+                walletMenu();
+        }
+    }
+
     public void printMenu(String[] options, String title) {
         int i;
         System.out.println(title);
@@ -187,6 +239,15 @@ public class ConsoleAdapter {
                         break;
                     case 2:
                         System.out.println("Option 2 selected");
+                        break;
+                    case 3:
+                        System.out.println("Option 3 selected");
+                        break;
+                    case 4:
+                        walletMenu();
+                        break;
+                    case 5:
+                        System.out.println("Option 5 selected");
                         break;
                     case 6:
                         System.out.println("Goodbye!");

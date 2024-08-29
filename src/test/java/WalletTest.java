@@ -12,13 +12,13 @@ import com.globant.domain.repositories.Wallet;
 import java.math.BigDecimal;
 
 public class WalletTest {
-    Wallet wallet;
     static UserRepository userRepository = new UserManager();
     static UsersLoader usersLoader = new UsersLoader(userRepository);
     Exchange exchange = new Exchange();
-    ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(wallet, exchange);
+    ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
     BigDecimal dollarPrice;
     BigDecimal euroPrice;
+    Wallet wallet;
 
     private void loadWalletTestData() {
         Currency dollar = Currency.getInstance("USD");
@@ -32,6 +32,7 @@ public class WalletTest {
 
     private void testDeposit() {
         loadWalletTestData();
+        wallet = ActiveUser.getInstance().getActiveUser().getWallet();
 
         System.out.println("\n###### Deposit test #####");
         InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC = new InitializeCurrencyPricesUCImpl(exchange);
@@ -40,7 +41,6 @@ public class WalletTest {
         Currency.setReferenceCurrency(Currency.getInstance("USD"));
 
         ActiveUser.getInstance().setActiveUser(userRepository.getByUsername("anthleon"));
-        wallet = ActiveUser.getInstance().getActiveUser().getWallet();
         try {
             BigDecimal expectedBalance = dollarPrice.multiply(new BigDecimal(100))
                     .add(euroPrice.multiply(new BigDecimal(100)));

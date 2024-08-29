@@ -47,14 +47,15 @@ public class Wallet implements WalletRepository {
     }
 
     @Override
-    public void addCryptocurrency() {
-
+    public void addCryptocurrency(Crypto crypto, BigDecimal amount) {
+        if (cryptocurrencies.isEmpty() || !cryptocurrencies.containsKey(crypto))
+            cryptocurrencies.put(crypto, BigDecimal.ZERO);
+        cryptocurrencies.put(crypto, cryptocurrencies.get(crypto).add(amount));
     }
-
+    @Override
     public void deposit(Fiat fiat, BigDecimal amount) {
-        if (fiats.isEmpty() || !fiats.containsKey(fiat)) {
+        if (fiats.isEmpty() || !fiats.containsKey(fiat))
             fiats.put(fiat, BigDecimal.ZERO);
-        }
         fiats.put(fiat, fiats.get(fiat).add(amount));
         updateBalance(fiat, amount);
     }

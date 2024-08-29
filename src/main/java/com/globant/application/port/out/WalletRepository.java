@@ -14,5 +14,6 @@ public interface WalletRepository {
     Map<Crypto, BigDecimal> getCryptocurrencies();
     Transaction makeTransaction();
     public void updateBalance(Fiat fiat, BigDecimal amount);
-    void addCryptocurrency();
+    void addCryptocurrency(Crypto crypto, BigDecimal amount);
+    void deposit(Fiat fiat, BigDecimal amount);
 }
