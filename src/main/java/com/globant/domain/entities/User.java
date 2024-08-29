@@ -1,5 +1,6 @@
 package com.globant.domain.entities;
 
+import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.MakeId;
 
 import java.util.List;
@@ -11,12 +12,13 @@ public class User {
     protected String email;
     protected transient String password;
     private List<Transaction> transactions;
+    private final Wallet wallet;
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-
+        this.wallet = new Wallet();
         accountId = MakeId.makeIdNumber(accountNumberId);
         accountNumberId++;
     }
@@ -34,6 +36,10 @@ public class User {
     }
 
     public String getPassword() { return password; }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
 
     public String toString() {
         return "User{" +

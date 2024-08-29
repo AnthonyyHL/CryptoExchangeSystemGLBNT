@@ -43,13 +43,11 @@ public abstract class Currency {
         referenceCurrency = currency;
     }
 
-    public BigDecimal getExchangeCurrencyRate(Currency currency) {
+    public BigDecimal getExchangeCurrencyRate() {
         if (this == referenceCurrency)
-            return currency.getPrice();
-        else if (currency == referenceCurrency)
-            return BigDecimal.ONE.divide(this.getPrice(), 8, RoundingMode.HALF_UP);
+            return price;
         else
-            return this.getPrice().divide(currency.getPrice(), 8, RoundingMode.HALF_UP);
+            return price.divide(referenceCurrency.price, 8, RoundingMode.HALF_UP);
     }
 
 }
