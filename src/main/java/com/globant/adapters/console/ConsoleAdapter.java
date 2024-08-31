@@ -19,6 +19,7 @@ public class ConsoleAdapter {
     private final UserRegistrationUCImpl userRegistrationUC;
     private final UserLoginUCImpl userLoginUC;
     private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
+    private final DepositMoneyUCImpl depositMoneyUC;
     private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
     private final BuyFromExchangeUCImpl buyFromExchangeUC;
     private final ViewTransactionHistoryUCImpl viewTransactionHistoryUC;
@@ -40,6 +41,7 @@ public class ConsoleAdapter {
             UserRegistrationUCImpl userRegistrationUC,
             UserLoginUCImpl userLoginUC,
             InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
+            DepositMoneyUCImpl depositMoneyUC,
             ViewWalletBalanceUCImpl viewWalletBalanceUC,
             BuyFromExchangeUCImpl buyFromExchangeUC,
             ViewTransactionHistoryUCImpl viewTransactionHistoryUC
@@ -47,6 +49,7 @@ public class ConsoleAdapter {
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
         this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
+        this.depositMoneyUC = depositMoneyUC;
         this.viewWalletBalanceUC = viewWalletBalanceUC;
         this.buyFromExchangeUC = buyFromExchangeUC;
         this.viewTransactionHistoryUC = viewTransactionHistoryUC;
@@ -167,7 +170,7 @@ public class ConsoleAdapter {
     public void showTransactions(){
         String[] transactionOptions = {"Show specific details", "Return to my wallet", "Back to Main Menu"};
         System.out.println("\nTRANSACTIONS:");
-        List<Transaction> transactions = ActiveUser.getInstance().getActiveUser().getTransactions();
+        List<Transaction> transactions = viewTransactionHistoryUC.getTransactionHistory();
         final int[] index = {1};
         transactions.forEach(transaction ->
                 System.out.printf("\t%d. Transaction #%s: %s\n", index[0]++, transaction.getTransactionId(), transaction.getTransactionDate())
