@@ -23,6 +23,7 @@ public class CryptoExchangeApp {
         initializeCurrencyPricesUC.loadCurrencyOnExchange();
         ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
         BuyFromExchangeUCImpl buyFromExchangeUC = new BuyFromExchangeUCImpl(exchange);
+        ViewTransactionHistoryUCImpl viewTransactionHistoryUC = new ViewTransactionHistoryUCImpl();
 
         Currency.setReferenceCurrency(Currency.getInstance("USD"));
 
@@ -31,7 +32,8 @@ public class CryptoExchangeApp {
                 userLoginUC,
                 initializeCurrencyPricesUC,
                 viewWalletBalanceUC,
-                buyFromExchangeUC
+                buyFromExchangeUC,
+                viewTransactionHistoryUC
         );
         consoleAdapter.boot();
     }

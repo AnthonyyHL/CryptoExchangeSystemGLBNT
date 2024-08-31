@@ -21,6 +21,7 @@ public class ConsoleAdapter {
     private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
     private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
     private final BuyFromExchangeUCImpl buyFromExchangeUC;
+    private final ViewTransactionHistoryUCImpl viewTransactionHistoryUC;
 
     Wallet wallet;
 
@@ -40,13 +41,15 @@ public class ConsoleAdapter {
             UserLoginUCImpl userLoginUC,
             InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
             ViewWalletBalanceUCImpl viewWalletBalanceUC,
-            BuyFromExchangeUCImpl buyFromExchangeUC
+            BuyFromExchangeUCImpl buyFromExchangeUC,
+            ViewTransactionHistoryUCImpl viewTransactionHistoryUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
         this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
         this.viewWalletBalanceUC = viewWalletBalanceUC;
         this.buyFromExchangeUC = buyFromExchangeUC;
+        this.viewTransactionHistoryUC = viewTransactionHistoryUC;
     }
     public void boot(){
         System.out.println("### Welcome to the Crypto Exchange App ###");
@@ -214,7 +217,7 @@ public class ConsoleAdapter {
 
         switch (optionSelected){
             case 1:
-                System.out.println("Option 1 selected");
+                System.out.println("\nTRANSACTIONS:");
                 break;
             case 2:
                 printMainMenu(mainOptions);
