@@ -15,7 +15,7 @@ public abstract class Currency {
 
     protected Currency(String name, BigDecimal price) {
         this.name = name;
-        this.price = price;
+        this.price = price.setScale(2, RoundingMode.HALF_UP);
         if (name.length() > 3)
             this.shorthandSymbol = name.substring(0, 3).toUpperCase();
         else

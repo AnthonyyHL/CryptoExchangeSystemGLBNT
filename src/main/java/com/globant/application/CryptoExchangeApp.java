@@ -21,6 +21,7 @@ public class CryptoExchangeApp {
         InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC = new InitializeCurrencyPricesUCImpl(exchange);
         initializeCurrencyPricesUC.loadCurrencies(); //Cargar instancias de monedas disponibles en todo el sistema
         initializeCurrencyPricesUC.loadCurrencyOnExchange();
+        DepositMoneyUCImpl depositMoneyUC = new DepositMoneyUCImpl();
         ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
         BuyFromExchangeUCImpl buyFromExchangeUC = new BuyFromExchangeUCImpl(exchange);
         ViewTransactionHistoryUCImpl viewTransactionHistoryUC = new ViewTransactionHistoryUCImpl();
@@ -31,6 +32,7 @@ public class CryptoExchangeApp {
                 userRegistrationUC,
                 userLoginUC,
                 initializeCurrencyPricesUC,
+                depositMoneyUC,
                 viewWalletBalanceUC,
                 buyFromExchangeUC,
                 viewTransactionHistoryUC
