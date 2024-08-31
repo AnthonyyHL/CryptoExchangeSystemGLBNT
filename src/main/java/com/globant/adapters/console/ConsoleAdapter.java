@@ -164,6 +164,43 @@ public class ConsoleAdapter {
         }
     }
 
+    public void showTransactions(){
+        String[] transactionOptions = {"Show specific details", "Return to my wallet", "Back to Main Menu"};
+        System.out.println("\nTRANSACTIONS:");
+        List<Transaction> transactions = ActiveUser.getInstance().getActiveUser().getTransactions();
+        final int[] index = {1};
+        transactions.forEach(transaction ->
+                System.out.printf("\t%d. Transaction #%s: %s\n", index[0]++, transaction.getTransactionId(), transaction.getTransactionDate())
+        );
+        printMenu(transactionOptions, "\nSelect an option:");
+        System.out.println("\nEnter an option: ");
+        int optionSelected = StaticScanner.getInstance().nextInt();
+        StaticScanner.getInstance().nextLine();
+
+        switch (optionSelected){
+            case 1:
+                System.out.print("\nEnter the transaction number: ");
+                int transactionNumber = StaticScanner.getInstance().nextInt();
+                StaticScanner.getInstance().nextLine();
+
+                Transaction transaction = transactions.get(transactionNumber - 1);
+
+                System.out.println("\n" + "-".repeat(3) + " Transaction #" + transaction.getTransactionId() + "-".repeat(33));
+                System.out.println(transaction);
+                showTransactions();
+                break;
+            case 2:
+                walletMenu();
+                break;
+            case 3:
+                printMainMenu(mainOptions);
+                break;
+            default:
+                System.err.println("Invalid option. Try again.");
+                showTransactions();
+        }
+    }
+
     public void exchangeMenu(){
         String[] exchangeOptions = {"Buy Cryptocurrency", "Back to Main Menu"};
         System.out.println("\nEXCHANGE MENU:");
@@ -217,7 +254,7 @@ public class ConsoleAdapter {
 
         switch (optionSelected){
             case 1:
-                System.out.println("\nTRANSACTIONS:");
+                showTransactions();
                 break;
             case 2:
                 printMainMenu(mainOptions);
