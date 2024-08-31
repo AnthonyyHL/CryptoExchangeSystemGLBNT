@@ -128,8 +128,9 @@ public class ConsoleAdapter {
     public void exchangeMenu(){
         String[] exchangeOptions = {"Buy Cryptocurrency", "Back to Main Menu"};
         System.out.println("\nEXCHANGE MENU:");
+        final int[] index = {1};
         initializeCurrencyPricesUC.getCurrencyAvailables().forEach((currency, amount) ->
-                System.out.printf("\t%s | Price: %s | Amount: %s\n", currency.getName(), currency.getPrice(), amount));
+                System.out.printf("\t%d. %s | Price: %s | Amount: %s\n", index[0]++, currency.getName(), currency.getPrice(), amount));
 
         printMenu(exchangeOptions, "");
         System.out.println("\nEnter an option: ");

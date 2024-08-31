@@ -20,7 +20,10 @@ public class Transaction {
 
     @Override
     public String toString(){
-        return "";
+        return "Cryptocurrency: " + cryptoTraded.getName() + "\n" +
+                "Amount: " + amountTraded + "\n" +
+                "Price at the moment: " + priceAtTheMoment + "\n" +
+                "Trade type: " + tradeType + "\n";
     }
 
 }

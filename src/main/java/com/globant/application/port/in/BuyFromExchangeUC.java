@@ -1,4 +1,4 @@
 package com.globant.application.port.in;
 
-public interface BuyCryptocurrenciesUC {
+public interface BuyFromExchangeUC {
 }
