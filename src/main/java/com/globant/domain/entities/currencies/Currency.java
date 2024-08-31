@@ -43,6 +43,8 @@ public abstract class Currency {
         referenceCurrency = currency;
     }
 
+    public static Currency getReferenceCurrency() { return referenceCurrency; }
+
     public BigDecimal getExchangeCurrencyRate() {
         if (this == referenceCurrency)
             return price;

@@ -3,6 +3,7 @@ package com.globant.domain.entities;
 import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.MakeId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -19,6 +20,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.wallet = new Wallet();
+        this.transactions = new ArrayList<>();
         accountId = MakeId.makeIdNumber(accountNumberId);
         accountNumberId++;
     }
@@ -39,6 +41,13 @@ public class User {
 
     public Wallet getWallet() {
         return wallet;
+    }
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
     }
 
     public String toString() {

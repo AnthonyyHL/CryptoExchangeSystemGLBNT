@@ -1,27 +1,26 @@
 package com.globant.adapters.console;
 
-import com.globant.application.usecases.InitializeCurrencyPricesUCImpl;
-import com.globant.application.usecases.UserLoginUCImpl;
-import com.globant.application.usecases.UserRegistrationUCImpl;
-import com.globant.application.usecases.ViewWalletBalanceUCImpl;
-import com.globant.domain.entities.currencies.Crypto;
+import com.globant.application.usecases.*;
+import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.repositories.ActiveUser;
-import com.globant.domain.repositories.UserManager;
 import com.globant.domain.repositories.Wallet;
+import com.globant.domain.util.NoCurrencyAvailableException;
 import com.globant.domain.util.StaticScanner;
 import com.globant.domain.util.UserAuthException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Map;
 
 public class ConsoleAdapter {
     private final UserRegistrationUCImpl userRegistrationUC;
     private final UserLoginUCImpl userLoginUC;
     private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
     private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
+    private final BuyFromExchangeUCImpl buyFromExchangeUC;
 
     Wallet wallet;
 
@@ -40,12 +39,14 @@ public class ConsoleAdapter {
             UserRegistrationUCImpl userRegistrationUC,
             UserLoginUCImpl userLoginUC,
             InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
-            ViewWalletBalanceUCImpl viewWalletBalanceUC
+            ViewWalletBalanceUCImpl viewWalletBalanceUC,
+            BuyFromExchangeUCImpl buyFromExchangeUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
         this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
         this.viewWalletBalanceUC = viewWalletBalanceUC;
+        this.buyFromExchangeUC = buyFromExchangeUC;
     }
     public void boot(){
         System.out.println("### Welcome to the Crypto Exchange App ###");
@@ -125,20 +126,59 @@ public class ConsoleAdapter {
         return password;
     }
 
+    public void buyFromExchange() {
+        Map<Currency, BigDecimal> availableExchangeCurrencies = initializeCurrencyPricesUC.getCurrencyAvailables();
+
+        System.out.print("\nEnter the option number of the currency you want to buy: ");
+        int optionSelected = StaticScanner.getInstance().nextInt();
+        StaticScanner.getInstance().nextLine();
+
+        Currency currencySelected = availableExchangeCurrencies.keySet().stream().toList().get(optionSelected - 1);
+
+        String currencyName = currencySelected.getName();
+        System.out.printf("You selected: %s\n", currencyName);
+
+        System.out.print("\nEnter the amount you want to buy: ");
+        BigDecimal amount = StaticScanner.getInstance().nextBigDecimal();
+        StaticScanner.getInstance().nextLine();
+
+        System.out.printf("The total amount to pay is: %s\n", currencySelected.getPrice().multiply(amount).setScale(2, RoundingMode.HALF_UP));
+
+        System.out.println("Confirm the purchase? (y/n)");
+        String confirm = StaticScanner.getInstance().nextLine();
+        if (confirm.equals("n")) {
+            System.out.println("Purchase canceled.");
+            return;
+        } else if (!confirm.equals("y")) {
+            System.err.println("Invalid option. Try again.");
+            return;
+        }
+
+        try {
+            buyFromExchangeUC.buyCurrency(optionSelected, amount);
+        } catch (NoCurrencyAvailableException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
     public void exchangeMenu(){
         String[] exchangeOptions = {"Buy Cryptocurrency", "Back to Main Menu"};
         System.out.println("\nEXCHANGE MENU:");
-        initializeCurrencyPricesUC.getCurrencyAvailables().forEach((currency, amount) ->
-                System.out.printf("\t%s | Price: %s | Amount: %s\n", currency.getName(), currency.getPrice(), amount));
 
-        printMenu(exchangeOptions, "");
+        final int[] index = {1};
+        Map<Currency, BigDecimal> availableExchangeCurrencies = initializeCurrencyPricesUC.getCurrencyAvailables();
+        availableExchangeCurrencies.forEach((currency, amount) ->
+                System.out.printf("\t%d. %s | Price: %s | Amount: %s\n", index[0]++, currency.getName(), currency.getPrice(), amount));
+
+        printMenu(exchangeOptions, "Select an option");
         System.out.println("\nEnter an option: ");
         int optionSelected = StaticScanner.getInstance().nextInt();
         StaticScanner.getInstance().nextLine();
 
         switch (optionSelected){
             case 1:
-                System.out.println("Option 1 selected");
+                buyFromExchange();
+                exchangeMenu();
                 break;
             case 2:
                 printMainMenu(mainOptions);
@@ -150,20 +190,22 @@ public class ConsoleAdapter {
     }
 
     public void walletMenu(){
-        String[] walletOptions = {"Back to Main Menu"};
+        String[] walletOptions = {"Transactions", "Back to Main Menu"};
         System.out.println("\nWALLET:");
         viewWalletBalanceUC.setWallet(wallet);
 
-        System.out.println("-".repeat(3) + " Fiat Currency " + "-".repeat(15));
+        System.out.println("-".repeat(3) + " Fiat Currency " + "-".repeat(37));
         viewWalletBalanceUC.viewWalletFiats().forEach((fiat, amount) ->
                 System.out.printf("\t%s | Amount: %s\n", fiat.getName(), amount));
 
-        System.out.println("\n" + "-".repeat(3) + " Crypto Currency " + "-".repeat(15));
+        System.out.println("\n" + "-".repeat(3) + " Crypto Currency " + "-".repeat(35));
         viewWalletBalanceUC.viewWalletCryptocurrencies().forEach((crypto, amount) -> {
                 BigDecimal amountPrice = crypto.getPrice().multiply(amount).setScale(2, RoundingMode.HALF_UP);
                 System.out.printf("\t%s | Price: %s | Amount: %s ≈ %s\n", crypto.getName(), crypto.getPrice(), amount, amountPrice);
         });
-        System.out.println("\n\tBALANCE: " + wallet.getBalance().setScale(2, RoundingMode.HALF_UP) + "\n");
+        System.out.println("\n" + "-".repeat(55));
+
+        System.out.println("\tBALANCE: " + wallet.getBalance().setScale(2, RoundingMode.HALF_UP) + "\n");
 
         printMenu(walletOptions, "Select an option:");
         System.out.println("\nEnter an option: ");
@@ -171,8 +213,10 @@ public class ConsoleAdapter {
         StaticScanner.getInstance().nextLine();
 
         switch (optionSelected){
-            // Add more cases here
             case 1:
+                System.out.println("Option 1 selected");
+                break;
+            case 2:
                 printMainMenu(mainOptions);
                 break;
             default:

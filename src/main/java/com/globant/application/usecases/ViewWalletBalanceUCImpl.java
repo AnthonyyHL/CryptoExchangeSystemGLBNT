@@ -33,7 +33,7 @@ public class ViewWalletBalanceUCImpl implements ViewWalletBalanceUC {
     public void deposit(String fiat, BigDecimal amount) {
         exchange.getCurrencies().forEach((currency, quantity) -> {
             if (currency.getName().equals(fiat)) {
-                wallet.deposit((Fiat) currency, amount);
+                wallet.deposit(currency, amount);
             }
         });
     }
