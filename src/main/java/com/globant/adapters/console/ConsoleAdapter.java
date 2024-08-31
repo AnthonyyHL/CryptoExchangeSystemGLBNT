@@ -167,6 +167,30 @@ public class ConsoleAdapter {
         }
     }
 
+    public void depositMoney(){
+        String[] depositOptions = {"Deposit to my wallet", "Back to Main Menu"};
+        System.out.println("\nDEPOSIT:");
+        System.out.printf("Fiat currency reference selected: %s\n", Currency.getReferenceCurrency().getShorthandSymbol());
+
+        System.out.print("Enter the amount to deposit: ");
+        BigDecimal amount = StaticScanner.getInstance().nextBigDecimal().setScale(2, RoundingMode.HALF_UP);
+        StaticScanner.getInstance().nextLine();
+
+        System.out.printf("The total amount to deposit is: %s\n", amount);
+
+        System.out.println("Confirm the deposit? (y/n)");
+        String confirm = StaticScanner.getInstance().nextLine();
+        if (confirm.equals("n")) {
+            System.out.println("Deposit canceled.");
+            return;
+        } else if (!confirm.equals("y")) {
+            System.err.println("Invalid option. Try again.");
+            return;
+        }
+        depositMoneyUC.depositFiat(amount);
+        System.out.printf("Deposit successful!. Your new balance is: %s\n\n", wallet.getBalance());
+    }
+
     public void showTransactions(){
         String[] transactionOptions = {"Show specific details", "Return to my wallet", "Back to Main Menu"};
         System.out.println("\nTRANSACTIONS:");
@@ -325,7 +349,7 @@ public class ConsoleAdapter {
                         exchangeMenu();
                         break;
                     case 2:
-                        System.out.println("Option 2 selected");
+                        depositMoney();
                         break;
                     case 3:
                         System.out.println("Option 3 selected");
