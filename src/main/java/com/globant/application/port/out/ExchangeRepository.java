@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface ExchangeRepository {
-    public void addCurrency(Currency currency, BigDecimal amount);
-    public void removeCurrency(Currency currency);
-    public Map<Currency, BigDecimal> getCurrencies();
-    public int buyCurrency(Currency currency, BigDecimal amount);
+    void addCurrency(Currency currency, BigDecimal amount);
+    void removeCurrency(Currency currency);
+    Map<Currency, BigDecimal> getCurrencies();
+    int buyCurrency(Currency currency, BigDecimal amount);
 }

@@ -61,7 +61,7 @@ public class BuyFromExchangeTest {
             BigDecimal walletAmount = activeUser.getWallet().getCryptocurrencies().get(currency);
             System.out.println("Current wallet amount: " + walletAmount);
 
-            buyFromExchangeUC.updateUserWallet(currency, amount);
+            buyFromExchangeUC.updateUserWallet(activeUser, currency, amount);
 
             BigDecimal currentWalletAmount = activeUser.getWallet().getCryptocurrencies().get(currency);
             System.out.println("Wallet amount after update: " + currentWalletAmount);
