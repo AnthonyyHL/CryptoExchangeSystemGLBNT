@@ -9,7 +9,7 @@ import com.globant.domain.repositories.Wallet;
 import java.math.BigDecimal;
 
 public class DepositMoneyUCImpl implements DepositMoneyUC {
-    Wallet wallet;
+    private Wallet wallet;
 
     @Override
     public void depositFiat(BigDecimal amount) {
