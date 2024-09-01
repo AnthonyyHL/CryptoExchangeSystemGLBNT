@@ -151,7 +151,7 @@ public class OrderBook implements OrderBookRepository {
         if (buyerFiatCurrencies.containsKey(referenceCurrency)) {
             BigDecimal fiatAmount = buyerFiatCurrencies.get(referenceCurrency);
             if (fiatAmount.compareTo(remainingAmount[0]) < 0) {
-                buyerWallet.deposit(referenceCurrency, BigDecimal.ZERO);
+                buyerWallet.deposit(referenceCurrency, fiatAmount.negate());
                 remainingAmount[0] = remainingAmount[0].subtract(fiatAmount);
             } else {
                 buyerWallet.deposit(referenceCurrency, remainingAmount[0].negate());
@@ -169,9 +169,9 @@ public class OrderBook implements OrderBookRepository {
                     BigDecimal equivalentAmount = remainingAmount[0].divide(fiat.getPrice(), 2, BigDecimal.ROUND_HALF_UP);
                     if (fiatAmount.compareTo(equivalentAmount) < 0) {
                         remainingAmount[0] = remainingAmount[0].subtract(fiatAmount.multiply(fiat.getPrice()));
-                        buyerWallet.deposit(referenceCurrency, BigDecimal.ZERO);
+                        buyerWallet.deposit(fiat, BigDecimal.ZERO);
                     } else {
-                        buyerWallet.deposit(referenceCurrency, equivalentAmount.negate());
+                        buyerWallet.deposit(fiat, equivalentAmount.negate());
                         remainingAmount[0] = BigDecimal.ZERO;
                     }
                 }

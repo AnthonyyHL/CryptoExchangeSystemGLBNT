@@ -22,8 +22,8 @@ public class PlaceBuyOrderUCImpl implements PlaceBuyOrderUC {
 
     @Override
     public void createBuyOrder(Currency crypto, BigDecimal amount, BigDecimal maximumPrice) {
-        Order buyOrder = new BuyOrder((Crypto) crypto, amount, maximumPrice);
-        //orderBook.matchSeller(buyOrder);
+        Order buyOrder = new BuyOrder(crypto, amount, maximumPrice);
+        orderBook.matchSeller(buyOrder);
     }
     @Override
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getOrders() {

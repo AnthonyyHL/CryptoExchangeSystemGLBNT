@@ -59,6 +59,8 @@ public class Wallet implements WalletRepository {
         if (fiats.isEmpty() || !fiats.containsKey(fiat))
             fiats.put(fiat, BigDecimal.ZERO);
         fiats.put(fiat, fiats.get(fiat).add(amount));
-        updateBalance(fiat, amount);
+
+        BigDecimal amountEquivalence = fiat.getExchangeCurrencyRate();
+        updateBalance(fiat, amount.multiply(amountEquivalence).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 }

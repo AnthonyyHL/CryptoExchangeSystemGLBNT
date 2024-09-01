@@ -24,7 +24,7 @@ public class InitializeCurrencyPricesUCImpl implements InitializeCurrencyPricesU
             CurrencyFactory.createCurrency("crypto", "ETH", "Ethereum", new BigDecimal("3000"));
 
             CurrencyFactory.createCurrency("fiat", "USD", "Dollar", new BigDecimal("1"));
-            CurrencyFactory.createCurrency("fiat", "EUR", "Euro", new BigDecimal("1.2"));
+            CurrencyFactory.createCurrency("fiat", "EUR", "Euro", new BigDecimal("1.11"));
         } catch (NoCurrencyAvailableException e) {
             System.out.println(e.getMessage());
         }
