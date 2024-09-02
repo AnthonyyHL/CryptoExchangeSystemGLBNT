@@ -1,14 +1,13 @@
 package com.globant.adapters.console;
 
+import com.globant.application.port.in.UserLogoutUC;
 import com.globant.application.usecases.*;
 import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.entities.currencies.CurrencyFactory;
 import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.entities.orders.BuyOrder;
 import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.repositories.ActiveUser;
-import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.NoCurrencyAvailableException;
 import com.globant.domain.util.StaticScanner;
@@ -23,6 +22,7 @@ import java.util.Map;
 public class ConsoleAdapter {
     private final UserRegistrationUCImpl userRegistrationUC;
     private final UserLoginUCImpl userLoginUC;
+    private final UserLogoutUC userLogoutUC;
     private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
     private final DepositMoneyUCImpl depositMoneyUC;
     private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
@@ -37,10 +37,10 @@ public class ConsoleAdapter {
     String[] mainOptions = {
             "Exchange Cryptocurrencies",
             "Deposit",
-            "Withdraw",
             "My Wallet",
             "My Orders",
             "Place Orders",
+            "Logout",
             "Exit"
     };
 
@@ -48,6 +48,7 @@ public class ConsoleAdapter {
     public ConsoleAdapter(
             UserRegistrationUCImpl userRegistrationUC,
             UserLoginUCImpl userLoginUC,
+            UserLogoutUC userLogoutUC,
             InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
             DepositMoneyUCImpl depositMoneyUC,
             ViewWalletBalanceUCImpl viewWalletBalanceUC,
@@ -58,6 +59,7 @@ public class ConsoleAdapter {
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
+        this.userLogoutUC = userLogoutUC;
         this.initializeCurrencyPricesUC = initializeCurrencyPricesUC;
         this.depositMoneyUC = depositMoneyUC;
         this.viewWalletBalanceUC = viewWalletBalanceUC;
@@ -526,6 +528,7 @@ public class ConsoleAdapter {
                     case 2:
                         loginUser(optionSelected);
                         System.out.println("User logged in successfully!\n");
+                        printMainMenu(mainOptions);
                         break;
                     case 3:
                         System.out.println("Goodbye!");
@@ -562,16 +565,18 @@ public class ConsoleAdapter {
                         depositMoney();
                         break;
                     case 3:
-                        System.out.println("Option 3 selected");
-                        break;
-                    case 4:
                         walletMenu();
                         break;
-                    case 5:
+                    case 4:
                         showOrders();
                         break;
-                    case 6:
+                    case 5:
                         placeOrdersMenu();
+                        break;
+                    case 6:
+                        userLogoutUC.logout();
+                        System.out.println("\nUser logged out successfully!\n");
+                        printAuthMenu(bootOptions);
                         break;
                     case 7:
                         System.out.println("Goodbye!");
