@@ -12,9 +12,8 @@ import java.util.TreeMap;
 public interface OrderBookRepository {
     Order createOrder(TradeType tradeType, Currency cryptoType, BigDecimal amount, BigDecimal price);
     void addOrder(Order order);
-    void removeOrder(String orderId);
-    void updateOrder(String orderId, Order order);
     Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrdersByUsername(String username);
+    public Map<Currency, TreeMap<BigDecimal, List<Order>>> getSellOrdersByUsername(String username);
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrders();
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getSellOrders();
     void matchSeller(Order buyOrder);

@@ -58,14 +58,6 @@ public class OrderBook implements OrderBookRepository {
         }
     }
     @Override
-    public void removeOrder(String orderId) {
-
-    }
-    @Override
-    public void updateOrder(String orderId, Order order) {
-
-    }
-    @Override
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrdersByUsername(String username) {
         Map<Currency, TreeMap<BigDecimal, List<Order>>> buyOrdersByUsername = new HashMap<>();
 
@@ -78,6 +70,20 @@ public class OrderBook implements OrderBookRepository {
         }));
 
         return buyOrdersByUsername;
+    }
+    @Override
+    public Map<Currency, TreeMap<BigDecimal, List<Order>>> getSellOrdersByUsername(String username) {
+        Map<Currency, TreeMap<BigDecimal, List<Order>>> sellOrdersByUsername = new HashMap<>();
+
+        sellOrders.forEach((crypto, orders) ->
+                orders.forEach((price, orderList) -> {
+                    List<Order> userOrders = orderList.stream()
+                            .filter(order -> order.getOrderEmitter()
+                                    .getUsername().equals(username)).toList();
+                    sellOrdersByUsername.put(crypto, new TreeMap<>(Map.of(price, userOrders)));
+                }));
+
+        return sellOrdersByUsername;
     }
     @Override
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrders() { return buyOrders; }

@@ -6,6 +6,7 @@ import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.currencies.CurrencyFactory;
 import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.entities.orders.BuyOrder;
+import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.repositories.ActiveUser;
 import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.repositories.Wallet;
@@ -28,6 +29,7 @@ public class ConsoleAdapter {
     private final BuyFromExchangeUCImpl buyFromExchangeUC;
     private final ViewTransactionHistoryUCImpl viewTransactionHistoryUC;
     private final PlaceBuyOrderUCImpl placeBuyOrderUC;
+    private final PlaceSellOrderUCImpl placeSellOrderUC;
 
     Wallet wallet;
 
@@ -51,7 +53,8 @@ public class ConsoleAdapter {
             ViewWalletBalanceUCImpl viewWalletBalanceUC,
             BuyFromExchangeUCImpl buyFromExchangeUC,
             ViewTransactionHistoryUCImpl viewTransactionHistoryUC,
-            PlaceBuyOrderUCImpl placeBuyOrderUC
+            PlaceBuyOrderUCImpl placeBuyOrderUC,
+            PlaceSellOrderUCImpl placeSellOrderUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
@@ -61,6 +64,7 @@ public class ConsoleAdapter {
         this.buyFromExchangeUC = buyFromExchangeUC;
         this.viewTransactionHistoryUC = viewTransactionHistoryUC;
         this.placeBuyOrderUC = placeBuyOrderUC;
+        this.placeSellOrderUC = placeSellOrderUC;
     }
     public void boot(){
         System.out.println("### Welcome to the Crypto Exchange App ###");
@@ -337,10 +341,10 @@ public class ConsoleAdapter {
         }
         placeOrdersMenu();
     }
-    
+
 
     public void showBuyOrders() {
-        String[] showBuyOrderOptions = {"Return to my my orders", "Back to Main Menu"};
+        String[] showBuyOrderOptions = {"Return to my orders", "Back to Main Menu"};
 
         System.out.println("\n\nBUY ORDERS");
         placeBuyOrderUC.getBuyOrders().forEach(
@@ -369,10 +373,42 @@ public class ConsoleAdapter {
         }
     }
 
+    public void showSellOrders() {
+        String[] showSellOrderOptions = {"Return to my orders", "Back to Main Menu"};
+
+        System.out.println("\n\nSELL ORDERS");
+        placeSellOrderUC.getSellOrders().forEach(
+                (currency, orders) ->
+                        orders.forEach((price, orderList) ->
+                                orderList.forEach(order ->
+                                        System.out.printf("\tSELL ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n",
+                                                ((SellOrder) order).getSellOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())))
+        );
+
+        printMenu(showSellOrderOptions, "\nSelect an option:");
+        System.out.println("\nEnter an option: ");
+        int optionSelected = StaticScanner.getInstance().nextInt();
+        StaticScanner.getInstance().nextLine();
+
+        switch (optionSelected){
+            case 1:
+                showOrders();
+                break;
+            case 2:
+                printMainMenu(mainOptions);
+                break;
+            default:
+                System.err.println("Invalid option. Try again.");
+                showBuyOrders();
+        }
+    }
+
     public void showOrders() {
         String[] showOrderOptions = {"Show Buy Orders", "Show Sell Orders", "Back to Main Menu"};
 
         System.out.println("\n\nMY ORDERS");
+
+        System.out.println("-".repeat(3) + " Buy Orders " + "-".repeat(75));
         placeBuyOrderUC.getBuyOrdersByUsername(ActiveUser.getInstance().getActiveUser().getUsername()).forEach(
             (currency, orders) ->
                 orders.forEach((price, orderList) ->
@@ -380,6 +416,16 @@ public class ConsoleAdapter {
                         System.out.printf("\tBUY ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n",
                         ((BuyOrder) order).getBuyOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())))
         );
+
+        System.out.println("\n" + "-".repeat(3) + " Sell Orders " + "-".repeat(74));
+        placeSellOrderUC.getSellOrdersByUsername(ActiveUser.getInstance().getActiveUser().getUsername()).forEach(
+                (currency, orders) ->
+                        orders.forEach((price, orderList) ->
+                                orderList.forEach(order ->
+                                        System.out.printf("\tSELL ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n",
+                                                ((SellOrder) order).getSellOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())))
+        );
+        System.out.println("\n" + "-".repeat(90));
 
         printMenu(showOrderOptions, "\nSelect an option:");
         System.out.println("\nEnter an option: ");
@@ -391,7 +437,7 @@ public class ConsoleAdapter {
                 showBuyOrders();
                 break;
             case 2:
-                //showSellOrders();
+                showSellOrders();
                 break;
             case 3:
                 printMainMenu(mainOptions);
@@ -405,13 +451,6 @@ public class ConsoleAdapter {
     public void placeBuyOrder() {
         System.out.println("\n\nPLACE BUY ORDER:");
 
-        //System.out.println("-".repeat(3) + " Available sell orders " + "-".repeat(29));
-        //placeBuyOrderUC.getBuyOrders().forEach((currency, orders) -> {
-        //    orders.forEach((price, orderList) ->
-        //            orderList.forEach(order ->
-        //                    System.out.printf("\tSELL ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n", ((BuyOrder) order).getBuyOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())));
-        //});
-        //System.out.println("\n" + "-".repeat(55) + "\n");
         System.out.println("-".repeat(3) + " Fiat currencies availables: " + "-".repeat(29));
         Map<Currency, BigDecimal> availableExchangeCurrencies = initializeCurrencyPricesUC.getCurrencyAvailables();
         int[] index = {1};
@@ -429,7 +468,7 @@ public class ConsoleAdapter {
         BigDecimal amount = StaticScanner.getInstance().nextBigDecimal();
         StaticScanner.getInstance().nextLine();
 
-        System.out.println("\nEnter the price you want to pay per unit: ");
+        System.out.println("\nEnter the maximum price you want to pay per unit: ");
         BigDecimal price = StaticScanner.getInstance().nextBigDecimal();
         StaticScanner.getInstance().nextLine();
 
@@ -437,7 +476,30 @@ public class ConsoleAdapter {
     }
 
     public void placeSellOrder() {
+        System.out.println("\n\nPLACE SELL ORDER:");
 
+        System.out.println("-".repeat(3) + " Fiat currencies availables: " + "-".repeat(29));
+        Map<Currency, BigDecimal> availableExchangeCurrencies = initializeCurrencyPricesUC.getCurrencyAvailables();
+        int[] index = {1};
+        availableExchangeCurrencies.forEach((currency, amount) ->
+                System.out.printf("\t%d. %s | Price: %s\n", index[0]++, currency.getName(), currency.getPrice()));
+        System.out.println("-".repeat(40) + "\n");
+
+        System.out.println("Select the currency you want to sell:");
+        int currencySelected = StaticScanner.getInstance().nextInt();
+        StaticScanner.getInstance().nextLine();
+        Currency currency = availableExchangeCurrencies.keySet().stream().toList().get(currencySelected - 1);
+        System.out.printf("You selected: %s\n", currency.getName());
+
+        System.out.println("\nEnter the amount you want to sell: ");
+        BigDecimal amount = StaticScanner.getInstance().nextBigDecimal();
+        StaticScanner.getInstance().nextLine();
+
+        System.out.println("\nEnter the minimum price you want to get per unit: ");
+        BigDecimal price = StaticScanner.getInstance().nextBigDecimal();
+        StaticScanner.getInstance().nextLine();
+
+        placeSellOrderUC.createSellOrder(currency, amount, price);
     }
 
     public void printMenu(String[] options, String title) {

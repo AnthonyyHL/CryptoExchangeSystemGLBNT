@@ -2,7 +2,6 @@ package com.globant.application.usecases;
 
 import com.globant.application.port.in.PlaceBuyOrderUC;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.entities.orders.BuyOrder;
 import com.globant.domain.entities.orders.Order;
 import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.util.InvalidOrderException;
