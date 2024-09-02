@@ -6,12 +6,14 @@ import com.globant.application.port.out.UserRepository;
 import com.globant.application.usecases.*;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.repositories.Exchange;
+import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.repositories.UserManager;
 
 public class CryptoExchangeApp {
     public static void boot(){
         UserRepository userRepository = new UserManager();
         Exchange exchange = new Exchange();
+        OrderBook orderBook = new OrderBook();
 
         UsersLoader usersLoader = new UsersLoader(userRepository);
         usersLoader.loadUsers();
@@ -20,11 +22,14 @@ public class CryptoExchangeApp {
         UserLoginUCImpl userLoginUC = new UserLoginUCImpl(userRepository);
         InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC = new InitializeCurrencyPricesUCImpl(exchange);
         initializeCurrencyPricesUC.loadCurrencies(); //Cargar instancias de monedas disponibles en todo el sistema
+        initializeCurrencyPricesUC.loadFiatOnSystem();
         initializeCurrencyPricesUC.loadCurrencyOnExchange();
         DepositMoneyUCImpl depositMoneyUC = new DepositMoneyUCImpl();
         ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
         BuyFromExchangeUCImpl buyFromExchangeUC = new BuyFromExchangeUCImpl(exchange);
         ViewTransactionHistoryUCImpl viewTransactionHistoryUC = new ViewTransactionHistoryUCImpl();
+        PlaceBuyOrderUCImpl placeBuyOrderUC = new PlaceBuyOrderUCImpl(orderBook);
+        PlaceSellOrderUCImpl placeSellOrderUC = new PlaceSellOrderUCImpl(orderBook);
 
         Currency.setReferenceCurrency(Currency.getInstance("USD"));
 
@@ -35,7 +40,9 @@ public class CryptoExchangeApp {
                 depositMoneyUC,
                 viewWalletBalanceUC,
                 buyFromExchangeUC,
-                viewTransactionHistoryUC
+                viewTransactionHistoryUC,
+                placeBuyOrderUC,
+                placeSellOrderUC
         );
         consoleAdapter.boot();
     }

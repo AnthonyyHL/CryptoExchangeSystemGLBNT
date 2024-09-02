@@ -2,31 +2,24 @@ package com.globant.domain.entities.orders;
 
 import com.globant.domain.entities.User;
 import com.globant.domain.entities.currencies.Crypto;
-import com.globant.domain.util.MakeId;
+import com.globant.domain.entities.currencies.Currency;
+import com.globant.domain.repositories.ActiveUser;
 
 import java.math.BigDecimal;
 
 public abstract class Order {
-
-    static int orderNumberId = 1;
-    private final String orderId;
-    private User orderEmitter;
-    private Crypto cryptoType;
+    private final User orderEmitter;
+    private final Crypto cryptoType;
     private BigDecimal amount;
 
-    public Order(Crypto cryptoType, BigDecimal amount) {
-        this.cryptoType = cryptoType;
+    public Order(Currency cryptoType, BigDecimal amount) {
+        this.cryptoType = (Crypto) cryptoType;
         this.amount = amount;
-
-        orderId = MakeId.makeIdNumber(orderNumberId);
+        orderEmitter = ActiveUser.getInstance().getActiveUser();
     }
 
     public Crypto getCryptoType() {
         return cryptoType;
-    }
-
-    public void setCryptoType(Crypto cryptoType) {
-        this.cryptoType = cryptoType;
     }
 
     public BigDecimal getAmount() {
@@ -37,7 +30,5 @@ public abstract class Order {
         this.amount = amount;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
+    public User getOrderEmitter() { return orderEmitter; }
 }

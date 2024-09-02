@@ -44,11 +44,7 @@ public class BuyFromExchangeUCImpl implements BuyFromExchangeUC {
     }
     @Override
     public void updateUserWallet(User activeUser, Currency currency, BigDecimal amount) {
-        Fiat fiat = (Fiat) Currency.getReferenceCurrency();
-        BigDecimal amountPaid = currency.getPrice().multiply(amount);
-
         Wallet wallet = activeUser.getWallet();
-        wallet.deposit(fiat, amountPaid.negate());
         wallet.addCryptocurrency(currency, amount);
     }
 }

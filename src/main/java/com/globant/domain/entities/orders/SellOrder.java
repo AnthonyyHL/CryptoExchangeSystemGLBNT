@@ -1,25 +1,27 @@
 package com.globant.domain.entities.orders;
 
-import com.globant.domain.entities.currencies.Crypto;
+import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.util.InvalidOrderException;
+import com.globant.domain.util.MakeId;
 
 import java.math.BigDecimal;
 
 public class SellOrder extends Order{
+    static int sellOrderNumberId = 1;
+    private final String sellOrderId;
     private BigDecimal minimumPrice;
-    public SellOrder(Crypto cryptoType, BigDecimal amount, BigDecimal minimumPrice) throws InvalidOrderException {
+    public SellOrder(Currency cryptoType, BigDecimal amount, BigDecimal minimumPrice) {
         super(cryptoType, amount);
-        if (cryptoType.getPrice().compareTo(minimumPrice.subtract(new BigDecimal(1))) < 0)
-            throw new InvalidOrderException("The minimum price is higher than the current price");
+        this.minimumPrice = minimumPrice;
+        sellOrderId = MakeId.makeIdNumber(sellOrderNumberId);
+        sellOrderNumberId++;
     }
 
     public BigDecimal getMinimumPrice() {
         return minimumPrice;
     }
 
-    public void setMinimumPrice(BigDecimal minimumPrice) {
-        this.minimumPrice = minimumPrice;
-    }
+    public String getSellOrderId() { return sellOrderId; }
 
     public String toString() {
         return "SellOrder{" +
