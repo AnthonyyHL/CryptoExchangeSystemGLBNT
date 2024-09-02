@@ -1,6 +1,7 @@
 package com.globant.domain.repositories;
 
 import com.globant.application.port.out.OrderBookRepository;
+import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.User;
 import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.entities.currencies.Currency;
@@ -10,6 +11,7 @@ import com.globant.domain.entities.orders.Order;
 import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.util.InvalidOrderException;
 import com.globant.domain.util.TradeType;
+import com.sun.source.tree.Tree;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -64,8 +66,18 @@ public class OrderBook implements OrderBookRepository {
 
     }
     @Override
-    public Order getOrderById(String orderId) {
-        return null;
+    public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrdersByUsername(String username) {
+        Map<Currency, TreeMap<BigDecimal, List<Order>>> buyOrdersByUsername = new HashMap<>();
+
+        buyOrders.forEach((crypto, orders) ->
+            orders.forEach((price, orderList) -> {
+                List<Order> userOrders = orderList.stream()
+                        .filter(order -> order.getOrderEmitter()
+                        .getUsername().equals(username)).toList();
+                buyOrdersByUsername.put(crypto, new TreeMap<>(Map.of(price, userOrders)));
+        }));
+
+        return buyOrdersByUsername;
     }
     @Override
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrders() { return buyOrders; }
@@ -124,6 +136,7 @@ public class OrderBook implements OrderBookRepository {
                         buyers.remove(price);
                         if (buyers.isEmpty()) buyOrders.remove(crypto);
                     }
+
                     return;
                 }
             }
@@ -133,17 +146,27 @@ public class OrderBook implements OrderBookRepository {
 
     @Override
     public void match(Order sellOrder, Order buyOrder) {
-        Wallet sellerWallet = sellOrder.getOrderEmitter().getWallet();
-        Wallet buyerWallet = buyOrder.getOrderEmitter().getWallet();
+        User seller = sellOrder.getOrderEmitter();
+        User buyer = buyOrder.getOrderEmitter();
 
+        Wallet sellerWallet = seller.getWallet();
+        Wallet buyerWallet = buyer.getWallet();
+
+        Currency currency = sellOrder.getCryptoType();
         BigDecimal price = ((SellOrder) sellOrder).getMinimumPrice();
         BigDecimal amount = sellOrder.getAmount();
         BigDecimal total = price.multiply(amount);
 
         Currency referenceCurrency = Currency.getReferenceCurrency();
 
+        Transaction sellerTransaction = seller.getWallet().makeOrderTransaction(currency, amount, price, TradeType.SELL, "SELL ORDER");
+        seller.addTransaction(sellerTransaction);
+
+        Transaction buyerTransaction = buyer.getWallet().makeOrderTransaction(currency, amount, price, TradeType.BUY, "BUY ORDER");
+        buyer.addTransaction(buyerTransaction);
+
         sellerWallet.deposit(referenceCurrency, total);
-        sellerWallet.addCryptocurrency(sellOrder.getCryptoType(), amount.negate());
+        sellerWallet.addCryptocurrency(currency, amount.negate());
 
         Map<Fiat, BigDecimal> buyerFiatCurrencies = buyerWallet.getFiats();
         BigDecimal[] remainingAmount = {total};
@@ -155,7 +178,7 @@ public class OrderBook implements OrderBookRepository {
                 remainingAmount[0] = remainingAmount[0].subtract(fiatAmount);
             } else {
                 buyerWallet.deposit(referenceCurrency, remainingAmount[0].negate());
-                buyerWallet.addCryptocurrency(buyOrder.getCryptoType(), amount);
+                buyerWallet.addCryptocurrency(currency, amount);
                 return;
             }
         }
@@ -177,6 +200,6 @@ public class OrderBook implements OrderBookRepository {
                 }
             }
         }
-        buyerWallet.addCryptocurrency(buyOrder.getCryptoType(), amount);
+        buyerWallet.addCryptocurrency(currency, amount);
     }
 }

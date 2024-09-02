@@ -2,6 +2,7 @@ import com.globant.application.config.UsersLoader;
 import com.globant.application.port.out.UserRepository;
 import com.globant.application.usecases.DepositMoneyUCImpl;
 import com.globant.domain.entities.User;
+import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.repositories.ActiveUser;
 import com.globant.domain.repositories.UserManager;
 
@@ -23,7 +24,7 @@ public class DepositFiatMoneyTest {
             BigDecimal initialBalance = activeUser.getWallet().getBalance();
             System.out.println("Balance before deposit: " + initialBalance);
 
-            depositMoneyUC.depositFiat(BigDecimal.valueOf(100));
+            depositMoneyUC.depositFiat(Currency.getInstance("USD"), BigDecimal.valueOf(100));
             BigDecimal balanceAfterDeposit = activeUser.getWallet().getBalance();
             System.out.println("Balance after deposit: " + balanceAfterDeposit);
 

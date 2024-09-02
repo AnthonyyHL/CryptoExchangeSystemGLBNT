@@ -1,7 +1,9 @@
 package com.globant.application.port.in;
 
+import com.globant.domain.entities.currencies.Currency;
+
 import java.math.BigDecimal;
 
 public interface DepositMoneyUC {
-    void depositFiat(BigDecimal amount);
+    void depositFiat(Currency fiat, BigDecimal amount);
 }

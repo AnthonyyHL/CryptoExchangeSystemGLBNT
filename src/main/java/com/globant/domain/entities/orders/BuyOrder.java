@@ -21,10 +21,6 @@ public class BuyOrder extends Order{
         return maximumPrice;
     }
 
-    public void setMaximumPrice(BigDecimal maximumPrice) {
-        this.maximumPrice = maximumPrice;
-    }
-
     public String getBuyOrderId() { return buyOrderId; }
 
     @Override

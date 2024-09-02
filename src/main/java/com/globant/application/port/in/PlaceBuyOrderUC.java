@@ -10,5 +10,8 @@ import java.util.TreeMap;
 
 public interface PlaceBuyOrderUC {
     void createBuyOrder(Currency crypto, BigDecimal amount, BigDecimal maximumPrice);
-    Map<Currency, TreeMap<BigDecimal, List<Order>>> getOrders();
+
+    Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrders();
+
+    Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrdersByUsername(String username);
 }

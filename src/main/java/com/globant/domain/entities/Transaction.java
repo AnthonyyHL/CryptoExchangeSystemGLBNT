@@ -24,16 +24,19 @@ public class Transaction {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public Transaction(Crypto cryptoTraded, BigDecimal amountTraded, TradeType tradeType, String source){
+    public Transaction(Crypto cryptoTraded, BigDecimal amountTraded, BigDecimal priceAtTheMoment, TradeType tradeType, String source) {
         this.cryptoTraded = cryptoTraded;
         this.amountTraded = amountTraded;
+        this.priceAtTheMoment = priceAtTheMoment;
         this.tradeType = tradeType;
-        this.priceAtTheMoment = cryptoTraded.getPrice();
         this.source = source;
         this.transactionDate = LocalDate.now();
         this.transactionTime = LocalTime.now();
         transactionId = MakeId.makeIdNumber(transactionNumberId);
         transactionNumberId++;
+    }
+    public Transaction(Crypto cryptoTraded, BigDecimal amountTraded, TradeType tradeType, String source){
+        this(cryptoTraded, amountTraded, cryptoTraded.getPrice(), tradeType, source);
     }
 
     public String getTransactionId() { return transactionId; }

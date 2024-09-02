@@ -14,7 +14,7 @@ public interface OrderBookRepository {
     void addOrder(Order order);
     void removeOrder(String orderId);
     void updateOrder(String orderId, Order order);
-    Order getOrderById(String orderId);
+    Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrdersByUsername(String username);
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getBuyOrders();
     public Map<Currency, TreeMap<BigDecimal, List<Order>>> getSellOrders();
     void matchSeller(Order buyOrder);

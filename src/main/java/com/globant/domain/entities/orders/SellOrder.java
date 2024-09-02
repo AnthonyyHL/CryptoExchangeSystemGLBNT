@@ -21,10 +21,6 @@ public class SellOrder extends Order{
         return minimumPrice;
     }
 
-    public void setMinimumPrice(BigDecimal minimumPrice) {
-        this.minimumPrice = minimumPrice;
-    }
-
     public String getSellOrderId() { return sellOrderId; }
 
     public String toString() {

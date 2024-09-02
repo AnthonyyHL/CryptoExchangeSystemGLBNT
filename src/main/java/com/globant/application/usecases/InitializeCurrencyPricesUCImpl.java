@@ -1,18 +1,20 @@
 package com.globant.application.usecases;
 
 import com.globant.application.port.in.InitializeCurrencyPricesUC;
-import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.currencies.CurrencyFactory;
+import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.repositories.Exchange;
 import com.globant.domain.util.NoCurrencyAvailableException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class InitializeCurrencyPricesUCImpl implements InitializeCurrencyPricesUC {
-    Exchange exchange;
+    List<Fiat> fiatAvailables;
+    private final Exchange exchange;
     public InitializeCurrencyPricesUCImpl(Exchange exchange) {
         this.exchange = exchange;
     }
@@ -43,4 +45,12 @@ public class InitializeCurrencyPricesUCImpl implements InitializeCurrencyPricesU
     public Map<Currency, BigDecimal> getCurrencyAvailables() {
         return exchange.getCurrencies();
     }
+    @Override
+    public void loadFiatOnSystem() {
+        fiatAvailables = new ArrayList<>();
+        fiatAvailables.add((Fiat)Currency.getInstance("USD"));
+        fiatAvailables.add((Fiat)Currency.getInstance("EUR"));
+    }
+    @Override
+    public List<Fiat> getFiatAvailables() { return fiatAvailables; }
 }
