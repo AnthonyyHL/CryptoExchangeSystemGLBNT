@@ -1,14 +1,13 @@
 package com.globant.adapters.console;
 
-import com.globant.application.port.in.UserLogoutUC;
-import com.globant.application.usecases.*;
+import com.globant.application.port.in.*;
+import com.globant.application.port.out.WalletRepository;
 import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.entities.orders.BuyOrder;
 import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.repositories.ActiveUser;
-import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.NoCurrencyAvailableException;
 import com.globant.domain.util.StaticScanner;
 import com.globant.domain.util.UserAuthException;
@@ -20,25 +19,25 @@ import java.util.List;
 import java.util.Map;
 
 public class ConsoleAdapter {
-    private final UserRegistrationUCImpl userRegistrationUC;
-    private final UserLoginUCImpl userLoginUC;
+    private final UserRegistrationUC userRegistrationUC;
+    private final UserLoginUC userLoginUC;
     private final UserLogoutUC userLogoutUC;
-    private final InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC;
-    private final DepositMoneyUCImpl depositMoneyUC;
-    private final ViewWalletBalanceUCImpl viewWalletBalanceUC;
-    private final BuyFromExchangeUCImpl buyFromExchangeUC;
-    private final ViewTransactionHistoryUCImpl viewTransactionHistoryUC;
-    private final PlaceBuyOrderUCImpl placeBuyOrderUC;
-    private final PlaceSellOrderUCImpl placeSellOrderUC;
+    private final InitializeCurrencyPricesUC initializeCurrencyPricesUC;
+    private final DepositMoneyUC depositMoneyUC;
+    private final ViewWalletBalanceUC viewWalletBalanceUC;
+    private final BuyFromExchangeUC buyFromExchangeUC;
+    private final ViewTransactionHistoryUC viewTransactionHistoryUC;
+    private final PlaceBuyOrderUC placeBuyOrderUC;
+    private final PlaceSellOrderUC placeSellOrderUC;
 
-    Wallet wallet;
+    WalletRepository wallet;
 
     String[] bootOptions = {"Sign Up", "Log In", "Exit"};
     String[] mainOptions = {
             "Exchange Cryptocurrencies",
             "Deposit",
             "My Wallet",
-            "My Orders",
+            "Orders",
             "Place Orders",
             "Logout",
             "Exit"
@@ -46,16 +45,16 @@ public class ConsoleAdapter {
 
     private static boolean invalidData = true;
     public ConsoleAdapter(
-            UserRegistrationUCImpl userRegistrationUC,
-            UserLoginUCImpl userLoginUC,
+            UserRegistrationUC userRegistrationUC,
+            UserLoginUC userLoginUC,
             UserLogoutUC userLogoutUC,
-            InitializeCurrencyPricesUCImpl initializeCurrencyPricesUC,
-            DepositMoneyUCImpl depositMoneyUC,
-            ViewWalletBalanceUCImpl viewWalletBalanceUC,
-            BuyFromExchangeUCImpl buyFromExchangeUC,
-            ViewTransactionHistoryUCImpl viewTransactionHistoryUC,
-            PlaceBuyOrderUCImpl placeBuyOrderUC,
-            PlaceSellOrderUCImpl placeSellOrderUC
+            InitializeCurrencyPricesUC initializeCurrencyPricesUC,
+            DepositMoneyUC depositMoneyUC,
+            ViewWalletBalanceUC viewWalletBalanceUC,
+            BuyFromExchangeUC buyFromExchangeUC,
+            ViewTransactionHistoryUC viewTransactionHistoryUC,
+            PlaceBuyOrderUC placeBuyOrderUC,
+            PlaceSellOrderUC placeSellOrderUC
     ){
         this.userRegistrationUC = userRegistrationUC;
         this.userLoginUC = userLoginUC;
@@ -74,7 +73,7 @@ public class ConsoleAdapter {
         printMainMenu(mainOptions);
 
     }
-    public void registerUser(int optionSelected){
+    private void registerUser(int optionSelected){
         System.out.println("\nSIGN UP:");
         String username = getUsernameFromConsole();
         String email = getEmailFromConsole(optionSelected);
@@ -82,15 +81,16 @@ public class ConsoleAdapter {
         String password = StaticScanner.getInstance().nextLine();
         userRegistrationUC.registerUser(username, email, password);
     }
-    public void loginUser(int optionSelected){
+    private void loginUser(int optionSelected){
         System.out.println("\nLOG IN:");
         String email = getEmailFromConsole(optionSelected);
         String password = getPasswordFromConsole(email);
         userLoginUC.logInUser(email, password);
         wallet = ActiveUser.getInstance().getActiveUser().getWallet();
+        viewWalletBalanceUC.setWallet(wallet);
     }
 
-    public String getUsernameFromConsole(){
+    private String getUsernameFromConsole(){
         String username = "";
         while(invalidData){
             try{
@@ -106,7 +106,7 @@ public class ConsoleAdapter {
         return username;
     }
 
-    public String getEmailFromConsole(int optionSelected){
+    private String getEmailFromConsole(int optionSelected){
         String email = "";
         while(invalidData){
             System.out.print("Enter your email: ");
@@ -130,7 +130,7 @@ public class ConsoleAdapter {
         return email;
     }
 
-    public String getPasswordFromConsole(String email){
+    private String getPasswordFromConsole(String email){
         String password = "";
         while(invalidData){
             System.out.print("Enter your password: ");
@@ -146,7 +146,7 @@ public class ConsoleAdapter {
         return password;
     }
 
-    public void buyFromExchange() {
+    private void buyFromExchange() {
         Map<Currency, BigDecimal> availableExchangeCurrencies = initializeCurrencyPricesUC.getCurrencyAvailables();
 
         System.out.print("\nEnter the option number of the currency you want to buy: ");
@@ -181,8 +181,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void depositMoney(){
-        String[] depositOptions = {"Deposit to my wallet", "Back to Main Menu"};
+    private void depositMoney(){
         System.out.println("\n\nDEPOSIT:");
 
 
@@ -213,10 +212,10 @@ public class ConsoleAdapter {
             return;
         }
         depositMoneyUC.depositFiat(currency, amount);
-        System.out.printf("Deposit successful!. Your new balance is: %s\n\n", wallet.getBalance());
+        System.out.printf("Deposit successful!. Your new balance is: %s\n\n", viewWalletBalanceUC.getWalletBalance());
     }
 
-    public void showTransactions(){
+    private void showTransactions(){
         String[] transactionOptions = {"Show specific details", "Return to my wallet", "Back to Main Menu"};
         System.out.println("\n\nTRANSACTIONS:");
         List<Transaction> transactions = viewTransactionHistoryUC.getTransactionHistory();
@@ -253,7 +252,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void exchangeMenu(){
+    private void exchangeMenu(){
         String[] exchangeOptions = {"Buy Cryptocurrency", "Back to Main Menu"};
         System.out.println("\n\nEXCHANGE MENU:");
 
@@ -281,26 +280,25 @@ public class ConsoleAdapter {
         }
     }
 
-    public void walletMenu(){
+    private void walletMenu(){
         String[] walletOptions = {"Transactions", "Back to Main Menu"};
         System.out.println("\n\nWALLET:");
-        viewWalletBalanceUC.setWallet(wallet);
 
         System.out.println("-".repeat(3) + " Fiat Currency " + "-".repeat(37));
-        viewWalletBalanceUC.viewWalletFiats().forEach((fiat, amount) -> {
+        viewWalletBalanceUC.getWalletFiats().forEach((fiat, amount) -> {
                 BigDecimal amountEquivalence = fiat.getExchangeCurrencyRate();
                 System.out.printf("\t%s | Amount: %s ≈ %s %s\n",
                 fiat.getName(), amount, amount.multiply(amountEquivalence).setScale(2, RoundingMode.HALF_UP), Currency.getReferenceCurrency().getName());
         });
 
         System.out.println("\n" + "-".repeat(3) + " Crypto Currency " + "-".repeat(35));
-        viewWalletBalanceUC.viewWalletCryptocurrencies().forEach((crypto, amount) -> {
+        viewWalletBalanceUC.getWalletCryptocurrencies().forEach((crypto, amount) -> {
                 BigDecimal amountPrice = crypto.getPrice().multiply(amount).setScale(2, RoundingMode.HALF_UP);
                 System.out.printf("\t%s | Price: %s | Amount: %s ≈ %s %s\n", crypto.getName(), crypto.getPrice(), amount, amountPrice, Currency.getReferenceCurrency().getName());
         });
         System.out.println("\n" + "-".repeat(55));
 
-        System.out.println("\tBALANCE: " + wallet.getBalance().setScale(2, RoundingMode.HALF_UP) + "\n");
+        System.out.println("\tBALANCE: " + viewWalletBalanceUC.getWalletBalance().setScale(2, RoundingMode.HALF_UP) + "\n");
 
         printMenu(walletOptions, "Select an option:");
         System.out.println("\nEnter an option: ");
@@ -320,7 +318,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void placeOrdersMenu() {
+    private void placeOrdersMenu() {
         String[] placeOrderOptions = {"Place Buy Order", "Place Sell Order", "Back to Main Menu"};
         printMenu(placeOrderOptions, "\n\nSelect an option:");
         System.out.println("\nEnter an option: ");
@@ -345,7 +343,7 @@ public class ConsoleAdapter {
     }
 
 
-    public void showBuyOrders() {
+    private void showBuyOrders() {
         String[] showBuyOrderOptions = {"Return to my orders", "Back to Main Menu"};
 
         System.out.println("\n\nBUY ORDERS");
@@ -375,7 +373,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void showSellOrders() {
+    private void showSellOrders() {
         String[] showSellOrderOptions = {"Return to my orders", "Back to Main Menu"};
 
         System.out.println("\n\nSELL ORDERS");
@@ -405,7 +403,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void showOrders() {
+    private void showOrders() {
         String[] showOrderOptions = {"Show Buy Orders", "Show Sell Orders", "Back to Main Menu"};
 
         System.out.println("\n\nMY ORDERS");
@@ -422,10 +420,10 @@ public class ConsoleAdapter {
         System.out.println("\n" + "-".repeat(3) + " Sell Orders " + "-".repeat(74));
         placeSellOrderUC.getSellOrdersByUsername(ActiveUser.getInstance().getActiveUser().getUsername()).forEach(
                 (currency, orders) ->
-                        orders.forEach((price, orderList) ->
-                                orderList.forEach(order ->
-                                        System.out.printf("\tSELL ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n",
-                                                ((SellOrder) order).getSellOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())))
+                    orders.forEach((price, orderList) ->
+                            orderList.forEach(order ->
+                                    System.out.printf("\tSELL ORDER #%s = User: %s | Currency: %s | Price: %s | Amount: %s\n",
+                                            ((SellOrder) order).getSellOrderId(), order.getOrderEmitter().getUsername(), currency.getName(), price, order.getAmount())))
         );
         System.out.println("\n" + "-".repeat(90));
 
@@ -450,7 +448,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void placeBuyOrder() {
+    private void placeBuyOrder() {
         System.out.println("\n\nPLACE BUY ORDER:");
 
         System.out.println("-".repeat(3) + " Fiat currencies availables: " + "-".repeat(29));
@@ -477,7 +475,7 @@ public class ConsoleAdapter {
         placeBuyOrderUC.createBuyOrder(currency, amount, price);
     }
 
-    public void placeSellOrder() {
+    private void placeSellOrder() {
         System.out.println("\n\nPLACE SELL ORDER:");
 
         System.out.println("-".repeat(3) + " Fiat currencies availables: " + "-".repeat(29));
@@ -504,7 +502,7 @@ public class ConsoleAdapter {
         placeSellOrderUC.createSellOrder(currency, amount, price);
     }
 
-    public void printMenu(String[] options, String title) {
+    private void printMenu(String[] options, String title) {
         int i;
         System.out.println(title);
         for (i = 0; i < options.length; i++) {
@@ -512,9 +510,9 @@ public class ConsoleAdapter {
         }
     }
 
-    public void printAuthMenu(String[] bootOptions){
+    private void printAuthMenu(String[] bootOptions){
         while (true){
-            printMenu(bootOptions, "\n\nCreate an account or log in:");
+            printMenu(bootOptions, "\nCreate an account or log in:");
             System.out.println("\nEnter an option: ");
             try {
                 int optionSelected = StaticScanner.getInstance().nextInt();
@@ -548,7 +546,7 @@ public class ConsoleAdapter {
         }
     }
 
-    public void printMainMenu(String[] mainOptions){
+    private void printMainMenu(String[] mainOptions){
         String activeUserName = ActiveUser.getInstance().getActiveUser().getUsername();
 
         while (true){

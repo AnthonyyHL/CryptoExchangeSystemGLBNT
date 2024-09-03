@@ -4,8 +4,8 @@ import com.globant.domain.entities.User;
 import com.globant.domain.util.UserAuthException;
 
 public class ActiveUser {
-    static ActiveUser instance;
-    User activeUser;
+    private static ActiveUser instance;
+    private User activeUser;
 
     private ActiveUser() {}
 

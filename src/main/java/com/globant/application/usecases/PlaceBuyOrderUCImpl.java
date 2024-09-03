@@ -1,9 +1,9 @@
 package com.globant.application.usecases;
 
 import com.globant.application.port.in.PlaceBuyOrderUC;
+import com.globant.application.port.out.OrderBookRepository;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.orders.Order;
-import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.util.InvalidOrderException;
 import com.globant.domain.util.TradeType;
 
@@ -13,10 +13,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class PlaceBuyOrderUCImpl implements PlaceBuyOrderUC {
-    private final OrderBook orderBook;
-    private Map<Currency, TreeMap<BigDecimal, List<Order>>> buyOrders;
+    private final OrderBookRepository orderBook;
 
-    public PlaceBuyOrderUCImpl(OrderBook orderBook) {
+    public PlaceBuyOrderUCImpl(OrderBookRepository orderBook) {
         this.orderBook = orderBook;
     }
 

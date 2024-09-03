@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Wallet implements WalletRepository {
-    Map<Crypto, BigDecimal> cryptocurrencies;
-    Map<Fiat, BigDecimal> fiats;
-    BigDecimal balance;
+    private Map<Crypto, BigDecimal> cryptocurrencies;
+    private Map<Fiat, BigDecimal> fiats;
+    private BigDecimal balance;
 
     public Wallet() {
         this.cryptocurrencies = new HashMap<>();

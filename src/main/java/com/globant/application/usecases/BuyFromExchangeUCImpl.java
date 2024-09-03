@@ -1,12 +1,11 @@
 package com.globant.application.usecases;
 
 import com.globant.application.port.in.BuyFromExchangeUC;
+import com.globant.application.port.out.ExchangeRepository;
 import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.User;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.repositories.ActiveUser;
-import com.globant.domain.repositories.Exchange;
 import com.globant.domain.repositories.Wallet;
 import com.globant.domain.util.NoCurrencyAvailableException;
 import com.globant.domain.util.TradeType;
@@ -15,8 +14,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class BuyFromExchangeUCImpl implements BuyFromExchangeUC {
-    Exchange exchange;
-    public BuyFromExchangeUCImpl(Exchange exchange) {
+    ExchangeRepository exchange;
+    public BuyFromExchangeUCImpl(ExchangeRepository exchange) {
         this.exchange = exchange;
     }
 

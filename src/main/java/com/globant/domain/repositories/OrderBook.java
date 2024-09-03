@@ -1,6 +1,7 @@
 package com.globant.domain.repositories;
 
 import com.globant.application.port.out.OrderBookRepository;
+import com.globant.application.port.out.WalletRepository;
 import com.globant.domain.entities.Transaction;
 import com.globant.domain.entities.User;
 import com.globant.domain.entities.currencies.Crypto;
@@ -11,7 +12,6 @@ import com.globant.domain.entities.orders.Order;
 import com.globant.domain.entities.orders.SellOrder;
 import com.globant.domain.util.InvalidOrderException;
 import com.globant.domain.util.TradeType;
-import com.sun.source.tree.Tree;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -29,7 +29,7 @@ public class OrderBook implements OrderBookRepository {
     @Override
     public Order createOrder(TradeType tradeType, Currency cryptoType, BigDecimal amount, BigDecimal price) {
         activeUser = ActiveUser.getInstance().getActiveUser();
-        Wallet userWallet = activeUser.getWallet();
+        WalletRepository userWallet = activeUser.getWallet();
         if (tradeType.equals(TradeType.BUY)) {
             if (userWallet.getBalance().compareTo(price.multiply(amount)) < 0) {
                 throw new InvalidOrderException("Insufficient funds");
@@ -155,8 +155,8 @@ public class OrderBook implements OrderBookRepository {
         User seller = sellOrder.getOrderEmitter();
         User buyer = buyOrder.getOrderEmitter();
 
-        Wallet sellerWallet = seller.getWallet();
-        Wallet buyerWallet = buyer.getWallet();
+        WalletRepository sellerWallet = seller.getWallet();
+        WalletRepository buyerWallet = buyer.getWallet();
 
         Currency currency = sellOrder.getCryptoType();
         BigDecimal price = ((SellOrder) sellOrder).getMinimumPrice();

@@ -15,7 +15,7 @@ public class WalletTest {
     static UserRepository userRepository = new UserManager();
     static UsersLoader usersLoader = new UsersLoader(userRepository);
     Exchange exchange = new Exchange();
-    ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl(exchange);
+    ViewWalletBalanceUCImpl viewWalletBalanceUC = new ViewWalletBalanceUCImpl();
     BigDecimal dollarPrice;
     BigDecimal euroPrice;
     Wallet wallet;

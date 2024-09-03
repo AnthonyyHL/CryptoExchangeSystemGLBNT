@@ -2,7 +2,6 @@ package com.globant.application.port.in;
 
 import com.globant.domain.entities.User;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.util.TradeType;
 
 import java.math.BigDecimal;
 

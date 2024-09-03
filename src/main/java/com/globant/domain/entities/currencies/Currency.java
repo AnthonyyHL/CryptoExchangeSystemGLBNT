@@ -37,7 +37,6 @@ public abstract class Currency {
         return name;
     }
     public BigDecimal getPrice() { return price; }
-    public void updatePrice(BigDecimal newPrice) { this.price = newPrice; }
 
     public static void setReferenceCurrency(Currency currency) {
         referenceCurrency = currency;

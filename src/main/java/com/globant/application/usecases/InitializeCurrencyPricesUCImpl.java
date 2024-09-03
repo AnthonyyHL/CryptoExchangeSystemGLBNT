@@ -1,10 +1,10 @@
 package com.globant.application.usecases;
 
 import com.globant.application.port.in.InitializeCurrencyPricesUC;
+import com.globant.application.port.out.ExchangeRepository;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.currencies.CurrencyFactory;
 import com.globant.domain.entities.currencies.Fiat;
-import com.globant.domain.repositories.Exchange;
 import com.globant.domain.util.NoCurrencyAvailableException;
 
 import java.math.BigDecimal;
@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class InitializeCurrencyPricesUCImpl implements InitializeCurrencyPricesUC {
     List<Fiat> fiatAvailables;
-    private final Exchange exchange;
-    public InitializeCurrencyPricesUCImpl(Exchange exchange) {
+    private final ExchangeRepository exchange;
+    public InitializeCurrencyPricesUCImpl(ExchangeRepository exchange) {
         this.exchange = exchange;
     }
 

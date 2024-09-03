@@ -2,16 +2,13 @@ package com.globant.domain.repositories;
 
 import com.globant.application.port.out.ExchangeRepository;
 import com.globant.domain.entities.currencies.Currency;
-import com.globant.domain.util.NoCurrencyAvailableException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Exchange implements ExchangeRepository {
-    Map<Currency, BigDecimal> currencyAvailables;
+    private Map<Currency, BigDecimal> currencyAvailables;
 
     public Exchange() { currencyAvailables = new HashMap<>(); }
 

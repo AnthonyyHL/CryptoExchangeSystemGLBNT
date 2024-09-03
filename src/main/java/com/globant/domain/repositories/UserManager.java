@@ -5,14 +5,13 @@ import com.globant.domain.entities.User;
 import com.globant.domain.util.UserAuthException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class UserManager implements UserRepository {
-    Map<String, User> users;
-    Map<String, String> emailToUsername;
-    Map<String, String> usernameToUsername;
-    ActiveUser activeUser;
+    private Map<String, User> users;
+    private Map<String, String> emailToUsername;
+    private Map<String, String> usernameToUsername;
+    private ActiveUser activeUser;
 
     public UserManager() {
         this.users = new HashMap<>();
@@ -32,11 +31,10 @@ public class UserManager implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        User userSaved = users.put(user.getUsername(), user);
+    public void save(User user) {
+        users.put(user.getUsername(), user);
         emailToUsername.put(user.getEmail(), user.getUsername());
         usernameToUsername.put(user.getUsername(), user.getUsername());
-        return userSaved;
     }
 
     @Override
@@ -53,11 +51,6 @@ public class UserManager implements UserRepository {
     @Override
     public void removeActiveUser() {
         activeUser.logOutActiveUser();
-    }
-
-    @Override
-    public List<User> getAll() {
-        return users.values().stream().toList();
     }
 
     @Override

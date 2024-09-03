@@ -1,6 +1,5 @@
 package com.globant.application.port.in;
 
-import com.globant.domain.entities.currencies.Crypto;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.currencies.Fiat;
 

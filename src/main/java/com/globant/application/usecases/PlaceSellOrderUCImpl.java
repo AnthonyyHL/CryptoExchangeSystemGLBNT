@@ -1,9 +1,9 @@
 package com.globant.application.usecases;
 
 import com.globant.application.port.in.PlaceSellOrderUC;
+import com.globant.application.port.out.OrderBookRepository;
 import com.globant.domain.entities.currencies.Currency;
 import com.globant.domain.entities.orders.Order;
-import com.globant.domain.repositories.OrderBook;
 import com.globant.domain.util.InvalidOrderException;
 import com.globant.domain.util.TradeType;
 
@@ -13,10 +13,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class PlaceSellOrderUCImpl implements PlaceSellOrderUC {
-    private final OrderBook orderBook;
-    private Map<Currency, TreeMap<BigDecimal, List<Order>>> buyOrders;
+    private final OrderBookRepository orderBook;
 
-    public PlaceSellOrderUCImpl(OrderBook orderBook) {
+    public PlaceSellOrderUCImpl(OrderBookRepository orderBook) {
         this.orderBook = orderBook;
     }
 
@@ -24,7 +23,7 @@ public class PlaceSellOrderUCImpl implements PlaceSellOrderUC {
     public void createSellOrder(Currency crypto, BigDecimal amount, BigDecimal minimumPrice) {
         try {
             Order sellOrder = orderBook.createOrder(TradeType.SELL, crypto, amount, minimumPrice);
-            orderBook.matchSeller(sellOrder);
+            orderBook.matchBuyer(sellOrder);
         } catch (InvalidOrderException e) {
             System.err.println(e.getMessage());
         }

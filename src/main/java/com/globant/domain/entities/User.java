@@ -9,9 +9,9 @@ import java.util.List;
 public class User {
     static int accountNumberId = 1;
     private final String accountId;
-    protected String username;
-    protected String email;
-    protected transient String password;
+    private String username;
+    private String email;
+    private transient String password;
     private List<Transaction> transactions;
     private final Wallet wallet;
 

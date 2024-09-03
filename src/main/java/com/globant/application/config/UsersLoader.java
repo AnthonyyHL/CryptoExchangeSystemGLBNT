@@ -4,7 +4,7 @@ import com.globant.application.port.out.UserRepository;
 import com.globant.domain.entities.User;
 
 public class UsersLoader {
-    UserRepository userRepository;
+    private UserRepository userRepository;
     public UsersLoader(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

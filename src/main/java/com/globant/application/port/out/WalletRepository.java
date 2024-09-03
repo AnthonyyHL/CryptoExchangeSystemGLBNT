@@ -7,7 +7,6 @@ import com.globant.domain.entities.currencies.Fiat;
 import com.globant.domain.util.TradeType;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 public interface WalletRepository {
@@ -16,7 +15,7 @@ public interface WalletRepository {
     Map<Crypto, BigDecimal> getCryptocurrencies();
     Transaction makeTransaction(Currency currency, BigDecimal amount, TradeType tradeType, String source);
     Transaction makeOrderTransaction(Currency currency, BigDecimal amount, BigDecimal priceAtTheMoment, TradeType tradeType, String source);
-    public void updateBalance(Fiat fiat, BigDecimal amount);
+    void updateBalance(Fiat fiat, BigDecimal amount);
     void addCryptocurrency(Currency currency, BigDecimal amount);
     void deposit(Currency currency, BigDecimal amount);
 }
